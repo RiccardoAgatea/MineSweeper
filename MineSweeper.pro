@@ -26,10 +26,14 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        MainWindow.cpp
+    MineSweeper.cpp \
+    Control.cpp \
+    View.cpp
 
 HEADERS += \
-        MainWindow.h
+    MineSweeper.h \
+    Control.h \
+    View.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
