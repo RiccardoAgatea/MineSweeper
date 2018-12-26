@@ -317,33 +317,7 @@ unsigned char MineSweeper::whatIsAt(unsigned int i, unsigned int j) const
     }
 }
 
-std::ostream &operator<<(std::ostream &os, const MineSweeper &m)
+MineSweeper::BoardSize MineSweeper::getBoardSize() const
 {
-    using std::endl;
-    os << ' ' << ' ' << ' ';
-
-    for (unsigned int i = 0; i < m.width; ++i)
-    {
-        if (i < 10)
-            os << ' ';
-
-        os << ' ' << i;
-    }
-
-    os << endl;
-
-    for (unsigned int i = 0; i < m.height; ++i)
-    {
-        if (i < 10)
-            os << ' ';
-
-        os << ' ' << i;
-
-        for (unsigned int j = 0; j < m.width; ++j)
-            os << ' ' << ' ' << m.whatIsAt(i, j);
-
-        os << endl << endl;
-    }
-
-    return os;
+    return BoardSize{width, height};
 }

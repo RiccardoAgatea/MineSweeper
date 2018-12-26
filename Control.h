@@ -13,7 +13,8 @@ private:
     MineSweeper *mine_sweeper;
     View *view;
 public:
-    explicit Control(QWidget *parent = nullptr);
+    explicit Control(View *parent);
+    void newGame(const QString &difficulty);
 
 signals:
 

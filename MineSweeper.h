@@ -1,12 +1,15 @@
 #ifndef MINESWEEPER_H
 #define MINESWEEPER_H
 #include <random>
-#include <iostream>
 
 class MineSweeper
 {
 public:
     enum Difficulty : char {E = 'e', I = 'i', H = 'h'};
+    struct BoardSize
+    {
+        unsigned int width, height;
+    };
 private:
     class Cell
     {
@@ -44,7 +47,7 @@ public:
     bool isGameFinished() const;
     bool isGameWon() const;
     unsigned char whatIsAt(unsigned int, unsigned int) const;
-    friend std::ostream &operator<<(std::ostream &, const MineSweeper &);
+    BoardSize getBoardSize() const;
 };
 
 #endif // MINESWEEPER_H

@@ -2,7 +2,7 @@
 #define VIEW_H
 
 #include <QWidget>
-#include <QMainWindow>
+#include <QGridLayout>
 
 class Control;
 
@@ -11,14 +11,14 @@ class View : public QWidget
     Q_OBJECT
 private:
     Control *control;
-    QMainWindow *window;
+    QGridLayout *grid_layout;
 public:
-    View(Control *cont, QWidget *parent = nullptr);
+    View(QWidget *parent = nullptr);
+    void paintGrid(unsigned int width, unsigned int height);
 
 signals:
 
 public slots:
-    //void show();
 };
 
 #endif // VIEW_H
