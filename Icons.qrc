@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/ico">
+        <file alias="Empty-tile">Icons/Empty Tile.png</file>
+    </qresource>
+</RCC>

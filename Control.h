@@ -8,13 +8,13 @@ class View;
 
 class Control : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 private:
-    MineSweeper *mine_sweeper;
-    View *view;
+	MineSweeper *mine_sweeper;
+	View *view;
 public:
-    explicit Control(View *parent);
-    void newGame(const QString &difficulty);
+	explicit Control(View *parent);
+	void newGame(const QString &difficulty);
 
 signals:
 

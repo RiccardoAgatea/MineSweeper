@@ -8,13 +8,13 @@ class Control;
 
 class View : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 private:
-    Control *control;
-    QGridLayout *grid_layout;
+	Control *control;
+	QGridLayout *grid_layout;
 public:
-    View(QWidget *parent = nullptr);
-    void paintGrid(unsigned int width, unsigned int height);
+	View(QWidget *parent = nullptr);
+	void paintGrid(unsigned int width, unsigned int height);
 
 signals:
 
