@@ -108,6 +108,6 @@ void View::paintGrid(unsigned int width, unsigned int height)
 
 	for (unsigned int i = 0; i < width; ++i)
 		for (unsigned int j = 0; j < height; ++j)
-			grid_layout->addWidget(new QPushButton(QIcon("Empty-tile"), ""), static_cast<int>(i),
+			grid_layout->addWidget(new QPushButton(""), static_cast<int>(i),
 								   static_cast<int>(j));
 }
