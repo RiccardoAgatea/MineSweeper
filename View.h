@@ -2,7 +2,7 @@
 #define VIEW_H
 
 #include <QWidget>
-#include <QGridLayout>
+#include <QGraphicsScene>
 
 class Control;
 
@@ -11,7 +11,7 @@ class View : public QWidget
 	Q_OBJECT
 private:
 	Control *control;
-	QGridLayout *grid_layout;
+	QGraphicsScene *grid;
 public:
 	View(QWidget *parent = nullptr);
 	void paintGrid(unsigned int width, unsigned int height);

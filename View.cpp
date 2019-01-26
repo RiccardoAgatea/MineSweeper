@@ -10,16 +10,19 @@
 #include <QToolBar>
 #include <QTimer>
 #include <QLCDNumber>
+#include <QGraphicsView>
 
 View::View(QWidget *parent):
 	QWidget(parent),
 	control(new Control(this)),
-	grid_layout(new QGridLayout())
+	grid(new QGraphicsScene(this))
 {
+	QGraphicsView *grid_view = new QGraphicsView(grid, this);
+
 	QVBoxLayout *main_layout = new QVBoxLayout(this);
 	QHBoxLayout *head_layout = new QHBoxLayout();
 	main_layout->addLayout(head_layout);
-	main_layout->addLayout(grid_layout);
+	main_layout->addWidget(grid_view);
 	main_layout->addStretch();
 
 	//Menu
@@ -97,17 +100,10 @@ View::View(QWidget *parent):
 		time_screen->display(time_screen->value() + 1);
 	});
 
-	//grid setup
-	grid_layout->setSpacing(0);
-
+	emit new_game->clicked();
 }
 
 void View::paintGrid(unsigned int width, unsigned int height)
 {
-	//Not working properly. Repaints buttons over preexisting ones, and never deletes old ones. This means that if you select easy after intermediate the new buttons get overpainted (and the old ones become a memory leak), and the buttons that don't get overpainted stay there and never get deleted nor hidden.
 
-	for (unsigned int i = 0; i < width; ++i)
-		for (unsigned int j = 0; j < height; ++j)
-			grid_layout->addWidget(new QPushButton(""), static_cast<int>(i),
-								   static_cast<int>(j));
 }
