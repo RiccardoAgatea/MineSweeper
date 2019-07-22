@@ -1,53 +1,70 @@
 #ifndef MINESWEEPER_H
 #define MINESWEEPER_H
-#include <random>
 
-class MineSweeper
+#include <QObject>
+#include <vector>
+
+class MineSweeper: public QObject
 {
+	Q_OBJECT
 public:
-	enum Difficulty : char {E, I, H};
-	struct BoardSize
+	enum Difficulty
 	{
-		unsigned int width, height;
+		Easy,
+		Intermediate,
+		Hard
 	};
 private:
-	class Cell
+	struct Cell
 	{
-	public:
-		short int surrounding_bombs;
-		bool clicked;
-		bool flag;
+		enum Flags
+		{
+			Clicked = 1,
+			Flagged = 2,
+			Bomb = 4
+		};
+
+		signed char flags;
+		unsigned int surrounding_bombs;
 
 		Cell();
-		void addBomb();
+		bool isClicked() const;
+		void click();
+		bool isFlagged() const;
+		void setFlag(bool f);
+		bool isBomb() const;
+		void setBomb();
 	};
 
-	const Difficulty dif;
-	const unsigned int width, height;
-	const unsigned int bombs;
-	Cell *grid;
-	unsigned int flags, unclicked_cells;
-	bool winning;
-	std::uniform_int_distribution<unsigned int> BOMB;
+	struct GameSize
+	{
+		unsigned int width, height, bombs;
+	};
 
-	static std::default_random_engine gen;
-	static unsigned int widthFromDif(Difficulty);
-	static unsigned int heightFromDif(Difficulty);
-	static unsigned int bombsFromDif(Difficulty);
+	std::vector<std::vector<Cell>> grid;
+	unsigned int bombs;
 
-	void gameOver();
+	static GameSize getGameSize(Difficulty d);
 public:
-	explicit MineSweeper(Difficulty);
-	MineSweeper(const MineSweeper &) = delete;
-	~MineSweeper();
-	MineSweeper &operator=(const MineSweeper &) = delete;
-	void clickAt(unsigned int, unsigned int);
-	void doubleClickAt(unsigned int, unsigned int);
-	void switchFlagAt(unsigned int, unsigned int);
-	bool isGameFinished() const;
-	bool isGameWon() const;
-	unsigned char whatIsAt(unsigned int, unsigned int) const;
-	BoardSize getBoardSize() const;
+	struct Position
+	{
+		int i, j;
+
+		unsigned int getUI() const;
+		unsigned int getUJ() const;
+	};
+
+	explicit MineSweeper(Difficulty d, QObject *parent = nullptr);
+
+signals:
+	void clicked(Position);
+	void flagged(Position, bool);
+	void gameOver();
+
+public slots:
+	void click(Position p);
+	void doubleClick(const Position &p);
+	void swichFlag(const Position &p);
 };
 
 #endif // MINESWEEPER_H
