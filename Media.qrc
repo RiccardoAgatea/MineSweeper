@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/icon">
+        <file alias="click">Icons/Click.png</file>
+        <file alias="default">Icons/Default.png</file>
+        <file alias="lose">Icons/Lose.png</file>
+        <file alias="win">Icons/Win.png</file>
+    </qresource>
+</RCC>

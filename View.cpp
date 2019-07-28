@@ -1,5 +1,6 @@
 #include "View.h"
-#include "Control.h"
+#include "MineSweeper.h"
+#include <QWidget>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QMenuBar>
@@ -12,26 +13,32 @@
 #include <QLCDNumber>
 #include <QGraphicsView>
 
-View::View(QWidget *parent):
-	QWidget(parent),
-	control(new Control(this)),
-	grid(new QGraphicsScene(this))
+void View::paintGrid()
 {
-	QGraphicsView *grid_view = new QGraphicsView(grid, this);
 
+}
+
+View::View(QWidget *parent):
+	QMainWindow(parent),
+	game(nullptr),
+	grid_layout(new QGridLayout)
+{
+	QWidget *main_widget = new QWidget;
 	QVBoxLayout *main_layout = new QVBoxLayout(this);
 	QHBoxLayout *head_layout = new QHBoxLayout();
 	main_layout->addLayout(head_layout);
-	main_layout->addWidget(grid_view);
+	main_layout->addLayout(grid_layout);
 	main_layout->addStretch();
 
+	main_widget->setLayout(main_layout);
+	setCentralWidget(main_widget);
+
 	//Menu
-	QMenuBar *menu_bar = new QMenuBar();
 	QMenu *file = new QMenu("File");
 	QAction *menu_new_game = new QAction("New Game");
 	QMenu *options = new QMenu("Options");
 
-	QActionGroup *difficulty = new QActionGroup(file);
+	QActionGroup *difficulty = new QActionGroup(options);
 	QAction *easy = new QAction("Easy", difficulty);
 	easy->setCheckable(true);
 	easy->setChecked(true);
@@ -42,8 +49,7 @@ View::View(QWidget *parent):
 
 	QAction *exit = new QAction("Exit");
 
-	layout()->setMenuBar(menu_bar);
-	menu_bar->addMenu(file);
+	menuBar()->addMenu(file);
 	file->addAction(menu_new_game);
 	file->addSeparator();
 	file->addMenu(options);
@@ -54,44 +60,37 @@ View::View(QWidget *parent):
 	file->addAction(exit);
 
 	//Head Bar
-	QPushButton *new_game = new QPushButton("New Game");
+	QPushButton *smile_button = new QPushButton(QIcon(":/icon/default"),
+			"");
 	QLCDNumber *bomb_screen = new QLCDNumber();
 	QLCDNumber *time_screen = new QLCDNumber();
 	QTimer *timer = new QTimer(time_screen);
 	head_layout->addWidget(bomb_screen);
 	head_layout->addStretch();
-	head_layout->addWidget(new_game);
+	head_layout->addWidget(smile_button);
 	head_layout->addStretch();
 	head_layout->addWidget(time_screen);
 
 	//connects for menu and head bar
 	connect(menu_new_game, &QAction::triggered,
-			new_game, &QPushButton::clicked);
+			smile_button, &QPushButton::clicked);
 
 	connect(difficulty, &QActionGroup::triggered,
-			new_game, &QPushButton::clicked);
+			smile_button, &QPushButton::clicked);
 
 	connect(exit, &QAction::triggered,
 			this, &View::close);
 
-	connect(new_game, &QPushButton::clicked,
+	connect(smile_button, &QPushButton::clicked,
 			timer, [timer]()
 	{
 		timer->start(1000);
 	});
 
-	connect(new_game, &QPushButton::clicked,
+	connect(smile_button, &QPushButton::clicked,
 			time_screen, [time_screen]()
 	{
 		time_screen->display(0);
-	});
-
-	connect(new_game, &QPushButton::clicked,
-			control, [this, options]()
-	{
-		foreach (const QAction *a, options->actions())
-			if (a->isChecked())
-				control->newGame(a->text());
 	});
 
 	connect(timer, &QTimer::timeout,
@@ -100,10 +99,42 @@ View::View(QWidget *parent):
 		time_screen->display(time_screen->value() + 1);
 	});
 
-	emit new_game->clicked();
-}
+	connect(smile_button, &QPushButton::clicked,
+			this, [this, difficulty]()
+	{
+		if (difficulty->checkedAction()->text() == "Easy")
+			game = new MineSweeper(MineSweeper::Easy, this);
+		else if (difficulty->checkedAction()->text() == "Intermediate")
+			game = new MineSweeper(MineSweeper::Intermediate, this);
+		else if (difficulty->checkedAction()->text() == "Hard")
+			game = new MineSweeper(MineSweeper::Hard, this);
 
-void View::paintGrid(unsigned int width, unsigned int height)
-{
+		paintGrid();
+	});
 
+	connect(smile_button, &QPushButton::pressed,
+			smile_button, [smile_button]()
+	{
+		smile_button->setIcon(QIcon(":/icon/click"));
+	});
+
+	connect(smile_button, &QPushButton::released,
+			smile_button, [smile_button]()
+	{
+		smile_button->setIcon(QIcon(":/icon/default"));
+	});
+
+	connect(game, &MineSweeper::gameOver,
+			smile_button, [smile_button]()
+	{
+		smile_button->setIcon(QIcon(":/icon/lose"));
+	});
+
+	connect(game, &MineSweeper::youWon,
+			smile_button, [smile_button]()
+	{
+		smile_button->setIcon(QIcon(":/icon/win"));
+	});
+
+	emit smile_button->clicked();
 }

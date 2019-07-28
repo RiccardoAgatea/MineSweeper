@@ -60,6 +60,7 @@ signals:
 	void clicked(Position);
 	void flagged(Position, bool);
 	void gameOver();
+	void youWon();
 
 public slots:
 	void click(Position p);

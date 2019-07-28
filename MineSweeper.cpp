@@ -134,14 +134,14 @@ void MineSweeper::swichFlag(const MineSweeper::Position &p)
 		if (!c.isFlagged())
 		{
 			c.setFlag(true);
-			++bombs;
+			--bombs;
 
 			emit flagged(p, true);
 		}
 		else
 		{
 			c.setFlag(false);
-			--bombs;
+			++bombs;
 
 			emit flagged(p, false);
 		}

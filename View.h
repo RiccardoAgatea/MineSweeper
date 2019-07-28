@@ -1,20 +1,21 @@
 #ifndef VIEW_H
 #define VIEW_H
 
-#include <QWidget>
-#include <QGraphicsScene>
+#include <QMainWindow>
+#include <QGridLayout>
+#include "MineSweeper.h"
 
-class Control;
-
-class View : public QWidget
+class View: public QMainWindow
 {
 	Q_OBJECT
 private:
-	Control *control;
-	QGraphicsScene *grid;
+	MineSweeper *game;
+	QGridLayout *grid_layout;
+
+	void paintGrid();
+
 public:
 	View(QWidget *parent = nullptr);
-	void paintGrid(unsigned int width, unsigned int height);
 
 signals:
 
