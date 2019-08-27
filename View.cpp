@@ -24,7 +24,7 @@ View::View(QWidget *parent):
 	grid_layout(new QGridLayout)
 {
 	QWidget *main_widget = new QWidget;
-	QVBoxLayout *main_layout = new QVBoxLayout(this);
+	QVBoxLayout *main_layout = new QVBoxLayout();
 	QHBoxLayout *head_layout = new QHBoxLayout();
 	main_layout->addLayout(head_layout);
 	main_layout->addLayout(grid_layout);
@@ -100,7 +100,7 @@ View::View(QWidget *parent):
 	});
 
 	connect(smile_button, &QPushButton::clicked,
-			this, [this, difficulty]()
+			this, [this, difficulty, smile_button]()
 	{
 		if (difficulty->checkedAction()->text() == "Easy")
 			game = new MineSweeper(MineSweeper::Easy, this);
@@ -108,6 +108,18 @@ View::View(QWidget *parent):
 			game = new MineSweeper(MineSweeper::Intermediate, this);
 		else if (difficulty->checkedAction()->text() == "Hard")
 			game = new MineSweeper(MineSweeper::Hard, this);
+
+		connect(game, &MineSweeper::gameOver,
+				smile_button, [smile_button]()
+		{
+			smile_button->setIcon(QIcon(":/icon/lose"));
+		});
+
+		connect(game, &MineSweeper::youWon,
+				smile_button, [smile_button]()
+		{
+			smile_button->setIcon(QIcon(":/icon/win"));
+		});
 
 		paintGrid();
 	});
@@ -124,17 +136,10 @@ View::View(QWidget *parent):
 		smile_button->setIcon(QIcon(":/icon/default"));
 	});
 
-	connect(game, &MineSweeper::gameOver,
-			smile_button, [smile_button]()
-	{
-		smile_button->setIcon(QIcon(":/icon/lose"));
-	});
-
-	connect(game, &MineSweeper::youWon,
-			smile_button, [smile_button]()
-	{
-		smile_button->setIcon(QIcon(":/icon/win"));
-	});
-
 	emit smile_button->clicked();
+}
+View::Cell::Cell(const MineSweeper::Position &p):
+	pos(p)
+{
+
 }

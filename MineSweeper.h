@@ -57,13 +57,13 @@ public:
 	explicit MineSweeper(Difficulty d, QObject *parent = nullptr);
 
 signals:
-	void clicked(Position);
-	void flagged(Position, bool);
+	void clicked(const Position &);
+	void flagged(const Position &, bool);
 	void gameOver();
 	void youWon();
 
 public slots:
-	void click(Position p);
+	void click(const Position &p);
 	void doubleClick(const Position &p);
 	void swichFlag(const Position &p);
 };

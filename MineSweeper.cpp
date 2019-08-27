@@ -26,7 +26,7 @@ MineSweeper::MineSweeper(Difficulty d, QObject *parent):
 	bombs = g.bombs;
 }
 
-void MineSweeper::click(MineSweeper::Position p)
+void MineSweeper::click(const Position &p)
 {
 	if (
 	    p.i >= 0 &&
