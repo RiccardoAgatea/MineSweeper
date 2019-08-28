@@ -138,7 +138,7 @@ View::View(QWidget *parent):
 
 	emit smile_button->clicked();
 }
-View::Cell::Cell(const MineSweeper::Position &p):
+ViewCell::ViewCell(const MineSweeper::Index &p):
 	pos(p)
 {
 
