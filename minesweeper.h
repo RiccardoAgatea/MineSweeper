@@ -4,8 +4,6 @@
 #include <QObject>
 #include <vector>
 
-class Cell;
-
 class MineSweeper: public QObject
 {
 	Q_OBJECT
@@ -16,6 +14,8 @@ public:
 		Intermediate,
 		Hard
 	};
+
+	class Cell;
 private:
 	struct GameSize
 	{
@@ -23,11 +23,20 @@ private:
 		int bombs;
 	};
 
-	std::vector<std::vector<Cell *>> grid;
+	std::vector<std::vector<Cell>> grid;
 	int bombs;
 
 	static GameSize getGameSize(Difficulty d);
 public:
+	class Cell
+	{
+		friend class MineSweeper;
+	private:
+		bool clicked, flagged, bomb;
+		unsigned int surrounding_bombs;
+	public:
+		Cell();
+	};
 	class Index
 	{
 		friend class MineSweeper;
@@ -39,33 +48,16 @@ public:
 	explicit MineSweeper(Difficulty d, QObject *parent = nullptr);
 	std::vector<std::vector<Index>> getGrid() const;
 	Cell &getCell(const Index &i);
-	void click(const Index &i);
-	void doubleClick(const Index &i);
-	void swtichFlag(const Index &i);
 
 signals:
+	void change(const Index &);
 	void gameOver();
 	void youWon();
 
 public slots:
-};
-
-//Cell should be a nested public class for Minesweeper, but nested classes can't use the moc functionalities
-class Cell: public QObject
-{
-	Q_OBJECT
-	friend class MineSweeper;
-private:
-	bool open, flagged, bomb;
-	unsigned short surrounding_bombs;
-	Cell();
-public:
-	void click();
-	void switchFlag();
-
-signals:
-	void clicked();
-	void switchedFlag();
+	void click(const Index &i);
+	void doubleClick(const Index &i);
+	void swtichFlag(const Index &i);
 };
 
 #endif // MINESWEEPER_H

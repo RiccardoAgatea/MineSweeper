@@ -1,5 +1,5 @@
-#include "View.h"
-#include "MineSweeper.h"
+#include "view.h"
+#include "cellwidget.h"
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -15,7 +15,27 @@
 
 void View::paintGrid()
 {
+	while (!grid_layout->isEmpty())
+	{
+		auto *item = grid_layout->takeAt(0);
+		delete item->widget();
+		delete item;
+	}
 
+	std::vector<std::vector<MineSweeper::Index>> grid = game->getGrid();
+
+	for (unsigned int i = 0; i < grid.size(); ++i)
+		for (unsigned int j = 0; j < grid[0].size(); ++j)
+		{
+			CellWidget *cell = new CellWidget(grid[i][j]);
+
+			grid_layout->addWidget(cell,
+								   static_cast<int>(i),
+								   static_cast<int>(j));
+
+			connect(game, &MineSweeper::change,
+					cell, &CellWidget::update);
+		}
 }
 
 View::View(QWidget *parent):
@@ -23,15 +43,25 @@ View::View(QWidget *parent):
 	game(nullptr),
 	grid_layout(new QGridLayout)
 {
+	setWindowFlags(windowFlags() | Qt::MSWindowsFixedSizeDialogHint);
 	QWidget *main_widget = new QWidget;
-	QVBoxLayout *main_layout = new QVBoxLayout();
-	QHBoxLayout *head_layout = new QHBoxLayout();
+	QVBoxLayout *main_layout = new QVBoxLayout;
+	QHBoxLayout *head_layout = new QHBoxLayout;
+	QHBoxLayout *centrate_grid_layout = new QHBoxLayout;
 	main_layout->addLayout(head_layout);
-	main_layout->addLayout(grid_layout);
+	main_layout->addLayout(centrate_grid_layout);
 	main_layout->addStretch();
+
+	centrate_grid_layout->addStretch(1);
+	centrate_grid_layout->addLayout(grid_layout);
+	centrate_grid_layout->addStretch(1);
 
 	main_widget->setLayout(main_layout);
 	setCentralWidget(main_widget);
+	layout()->setSizeConstraint(QLayout::SetFixedSize);
+	grid_layout->setSizeConstraint(QLayout::SetFixedSize);
+
+	grid_layout->setSpacing(1);
 
 	//Menu
 	QMenu *file = new QMenu("File");
@@ -102,6 +132,8 @@ View::View(QWidget *parent):
 	connect(smile_button, &QPushButton::clicked,
 			this, [this, difficulty, smile_button]()
 	{
+		delete game;
+
 		if (difficulty->checkedAction()->text() == "Easy")
 			game = new MineSweeper(MineSweeper::Easy, this);
 		else if (difficulty->checkedAction()->text() == "Intermediate")
@@ -138,8 +170,8 @@ View::View(QWidget *parent):
 
 	emit smile_button->clicked();
 }
-ViewCell::ViewCell(const MineSweeper::Index &p):
-	pos(p)
-{
 
+QSize View::sizeHint() const
+{
+	return {0, 0};
 }

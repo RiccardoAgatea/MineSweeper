@@ -1,4 +1,4 @@
-﻿#include "MineSweeper.h"
+﻿#include "minesweeper.h"
 #include <algorithm>
 
 MineSweeper::GameSize MineSweeper::getGameSize(MineSweeper::Difficulty
@@ -85,7 +85,7 @@ std::vector<std::vector<MineSweeper::Index>> MineSweeper::getGrid()
 	return aux;
 }
 
-Cell &MineSweeper::getCell(const MineSweeper::Index &i)
+MineSweeper::Cell &MineSweeper::getCell(const MineSweeper::Index &i)
 {
 	return grid[i.i][i.j];
 }
@@ -94,9 +94,11 @@ void MineSweeper::click(const MineSweeper::Index &i)
 {
 	Cell &c = getCell(i);
 
-	if (!c.open)
+	if (!c.clicked && !c.flagged)
 	{
-		c.click();
+		c.clicked = true;
+
+		emit change(i);
 
 		if (c.bomb)
 			emit gameOver();
@@ -136,7 +138,7 @@ void MineSweeper::doubleClick(const MineSweeper::Index &i)
 {
 	Cell &c = getCell(i);
 
-	if (c.open)
+	if (c.clicked)
 	{
 		unsigned int surrounding_flags = 0;
 
@@ -203,38 +205,27 @@ void MineSweeper::doubleClick(const MineSweeper::Index &i)
 
 void MineSweeper::swtichFlag(const MineSweeper::Index &i)
 {
-	getCell(i).switchFlag();
+	Cell &c = getCell(i);
+
+	c.flagged = !(c.flagged);
+
 	bombs += getCell(i).flagged ? -1 : +1;
-}
 
-Cell::Cell():
-	open(false),
-	flagged(false),
-	bomb(false),
-	surrounding_bombs(0)
-{
-
-}
-
-void Cell::click()
-{
-	if (!open)
-	{
-		open = true;
-		emit clicked();
-	}
-}
-
-void Cell::switchFlag()
-{
-	flagged = !flagged;
-
-	emit switchedFlag();
+	emit change(i);
 }
 
 MineSweeper::Index::Index(unsigned int row, unsigned int column):
 	i(row),
 	j(column)
+{
+
+}
+
+MineSweeper::Cell::Cell():
+	clicked(false),
+	flagged(false),
+	bomb(false),
+	surrounding_bombs(0)
 {
 
 }

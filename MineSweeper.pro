@@ -12,13 +12,15 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs depr
 CONFIG += c++11
 
 SOURCES += \
-	MineSweeper.cpp \
+	cellwidget.cpp \
 	main.cpp \
-    View.cpp
+	minesweeper.cpp \
+	view.cpp
 
 HEADERS += \
-    MineSweeper.h \
-    View.h
+    cellwidget.h \
+    minesweeper.h \
+    view.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -26,4 +28,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
-	Media.qrc
+	media.qrc
