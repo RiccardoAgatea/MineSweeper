@@ -23,7 +23,7 @@ MineSweeper::MineSweeper(Difficulty d, QObject *parent):
 	GameSize g = getGameSize(d);
 
 	grid = std::vector<std::vector<Cell>>(g.height,
-										  std::vector<Cell>(g.width));
+	                                      std::vector<Cell>(g.width));
 	bombs = g.bombs;
 
 	//Connect the gameOver signal with a lambda that clicks the cell for every cell that's constructed
@@ -37,7 +37,7 @@ MineSweeper::MineSweeper(Difficulty d, QObject *parent):
 	std::random_shuffle(numbers.begin(), numbers.end());
 
 	for (unsigned int i = 0; i < numbers.size(); ++i)
-		grid[i / g.width][i % g.width].bomb = true;
+		grid[i / g.width][i % g.width].bomb = numbers[i] < bombs;
 
 	for (unsigned int i = 0; i < g.height; ++i)
 		for (unsigned int j = 0; j < g.width; ++j)
@@ -74,15 +74,19 @@ MineSweeper::MineSweeper(Difficulty d, QObject *parent):
 }
 
 std::vector<std::vector<MineSweeper::Index>> MineSweeper::getGrid()
-        const
 {
 	std::vector<std::vector<MineSweeper::Index>> aux(grid.size());
 
 	for (unsigned int i = 0; i < grid.size(); ++i)
 		for (unsigned int j = 0; j < grid[0].size(); ++j)
-			aux[i].push_back({i, j});
+			aux[i].push_back({grid, i, j});
 
 	return aux;
+}
+
+int MineSweeper::getBombs() const
+{
+	return bombs;
 }
 
 MineSweeper::Cell &MineSweeper::getCell(const MineSweeper::Index &i)
@@ -108,27 +112,27 @@ void MineSweeper::click(const MineSweeper::Index &i)
 			if (i.i > 0)
 			{
 				if (i.j > 0)
-					click({i.i - 1, i.j - 1});
-				click({i.i - 1, i.j});
+					click({grid, i.i - 1, i.j - 1});
+				click({grid, i.i - 1, i.j});
 
 				if (i.j < grid[0].size() - 1)
-					click({i.i - 1, i.j + 1});
+					click({grid, i.i - 1, i.j + 1});
 			}
 
 			if (i.j > 0)
-				click({i.i, i.j - 1});
+				click({grid, i.i, i.j - 1});
 
 			if (i.j < grid[0].size() - 1)
-				click({i.i, i.j + 1});
+				click({grid, i.i, i.j + 1});
 
 			if (i.i < grid.size() - 1)
 			{
 				if (i.j > 0)
-					click({i.i + 1, i.j - 1});
-				click({i.i + 1, i.j});
+					click({grid, i.i + 1, i.j - 1});
+				click({grid, i.i + 1, i.j});
 
 				if (i.j < grid[0].size() - 1)
-					click({i.i + 1, i.j + 1});
+					click({grid, i.i + 1, i.j + 1});
 			}
 		}
 	}
@@ -144,31 +148,31 @@ void MineSweeper::doubleClick(const MineSweeper::Index &i)
 
 		if (i.i > 0)
 		{
-			if (i.j > 0 && getCell({i.i - 1, i.j - 1}).flagged)
+			if (i.j > 0 && getCell({grid, i.i - 1, i.j - 1}).flagged)
 				++surrounding_flags;
 
-			if (getCell({i.i - 1, i.j}).flagged)
+			if (getCell({grid, i.i - 1, i.j}).flagged)
 				++surrounding_flags;
 
-			if (i.j < grid[0].size() - 1 && getCell({i.i - 1, i.j + 1}).flagged)
+			if (i.j < grid[0].size() - 1 && getCell({grid, i.i - 1, i.j + 1}).flagged)
 				++surrounding_flags;
 		}
 
-		if (i.j > 0 && getCell({i.i, i.j - 1}).flagged)
+		if (i.j > 0 && getCell({grid, i.i, i.j - 1}).flagged)
 			++surrounding_flags;
 
-		if (i.j < grid[0].size() - 1 && getCell({i.i, i.j + 1}).flagged)
+		if (i.j < grid[0].size() - 1 && getCell({grid, i.i, i.j + 1}).flagged)
 			++surrounding_flags;
 
 		if (i.i < grid.size() - 1)
 		{
-			if (i.j > 0 && getCell({i.i + 1, i.j - 1}).flagged)
+			if (i.j > 0 && getCell({grid, i.i + 1, i.j - 1}).flagged)
 				++surrounding_flags;
 
-			if (getCell({i.i + 1, i.j}).flagged)
+			if (getCell({grid, i.i + 1, i.j}).flagged)
 				++surrounding_flags;
 
-			if (i.j < grid[0].size() - 1 && getCell({i.i + 1, i.j + 1}).flagged)
+			if (i.j < grid[0].size() - 1 && getCell({grid, i.i + 1, i.j + 1}).flagged)
 				++surrounding_flags;
 		}
 
@@ -177,33 +181,33 @@ void MineSweeper::doubleClick(const MineSweeper::Index &i)
 			if (i.i > 0)
 			{
 				if (i.j > 0)
-					click({i.i - 1, i.j - 1});
-				click({i.i - 1, i.j});
+					click({grid, i.i - 1, i.j - 1});
+				click({grid, i.i - 1, i.j});
 
 				if (i.j < grid[0].size() - 1)
-					click({i.i - 1, i.j + 1});
+					click({grid, i.i - 1, i.j + 1});
 			}
 
 			if (i.j > 0)
-				click({i.i, i.j - 1});
+				click({grid, i.i, i.j - 1});
 
 			if (i.j < grid[0].size() - 1)
-				click({i.i, i.j + 1});
+				click({grid, i.i, i.j + 1});
 
 			if (i.i < grid.size() - 1)
 			{
 				if (i.j > 0)
-					click({i.i + 1, i.j - 1});
-				click({i.i + 1, i.j});
+					click({grid, i.i + 1, i.j - 1});
+				click({grid, i.i + 1, i.j});
 
 				if (i.j < grid[0].size() - 1)
-					click({i.i + 1, i.j + 1});
+					click({grid, i.i + 1, i.j + 1});
 			}
 		}
 	}
 }
 
-void MineSweeper::swtichFlag(const MineSweeper::Index &i)
+void MineSweeper::switchFlag(const MineSweeper::Index &i)
 {
 	Cell &c = getCell(i);
 
@@ -214,11 +218,34 @@ void MineSweeper::swtichFlag(const MineSweeper::Index &i)
 	emit change(i);
 }
 
-MineSweeper::Index::Index(unsigned int row, unsigned int column):
+MineSweeper::Index::Index(std::vector<std::vector<Cell>> &g,
+                          unsigned int row,
+                          unsigned int column):
+	grid(g),
 	i(row),
 	j(column)
 {
 
+}
+
+MineSweeper::Cell &MineSweeper::Index::operator*() const
+{
+	return grid[i][j];
+}
+
+MineSweeper::Cell *MineSweeper::Index::operator->() const
+{
+	return &grid[i][j];
+}
+
+int MineSweeper::Index::row() const
+{
+	return i;
+}
+
+int MineSweeper::Index::column() const
+{
+	return j;
 }
 
 MineSweeper::Cell::Cell():
@@ -228,4 +255,24 @@ MineSweeper::Cell::Cell():
 	surrounding_bombs(0)
 {
 
+}
+
+bool MineSweeper::Cell::isClicked() const
+{
+	return clicked;
+}
+
+bool MineSweeper::Cell::isFlagged() const
+{
+	return flagged;
+}
+
+bool MineSweeper::Cell::isBomb() const
+{
+	return bomb;
+}
+
+unsigned int MineSweeper::Cell::getSurroundingBombs() const
+{
+	return surrounding_bombs;
 }

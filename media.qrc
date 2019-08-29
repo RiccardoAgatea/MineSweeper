@@ -4,5 +4,6 @@
         <file alias="default">Icons/Default.png</file>
         <file alias="lose">Icons/Lose.png</file>
         <file alias="win">Icons/Win.png</file>
+        <file alias="flag">Icons/Flag.png</file>
     </qresource>
 </RCC>

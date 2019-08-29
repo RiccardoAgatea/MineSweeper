@@ -33,9 +33,26 @@ void View::paintGrid()
 								   static_cast<int>(i),
 								   static_cast<int>(j));
 
-			connect(game, &MineSweeper::change,
-					cell, &CellWidget::update);
+			connect(cell, &CellWidget::clicked,
+					game, [this, cell]()
+			{
+				game->click(cell->getCell());
+			});
+
+			connect(cell, &CellWidget::rightClicked,
+					game, [this, cell]()
+			{
+				game->switchFlag(cell->getCell());
+			});
 		}
+
+	connect(game, &MineSweeper::change,
+			this, [this](const MineSweeper::Index & i)
+	{
+		qobject_cast<CellWidget *>(grid_layout->
+								   itemAtPosition(i.row(), i.column())->
+								   widget())->update();
+	});
 }
 
 View::View(QWidget *parent):
@@ -130,7 +147,7 @@ View::View(QWidget *parent):
 	});
 
 	connect(smile_button, &QPushButton::clicked,
-			this, [this, difficulty, smile_button]()
+			this, [this, difficulty, smile_button, timer, bomb_screen]()
 	{
 		delete game;
 
@@ -141,16 +158,27 @@ View::View(QWidget *parent):
 		else if (difficulty->checkedAction()->text() == "Hard")
 			game = new MineSweeper(MineSweeper::Hard, this);
 
+		bomb_screen->display(game->getBombs());
+
 		connect(game, &MineSweeper::gameOver,
-				smile_button, [smile_button]()
+				smile_button, [smile_button, timer]()
 		{
+			timer->stop();
 			smile_button->setIcon(QIcon(":/icon/lose"));
 		});
 
 		connect(game, &MineSweeper::youWon,
-				smile_button, [smile_button]()
+				smile_button, [smile_button, timer]()
 		{
+			timer->stop();
 			smile_button->setIcon(QIcon(":/icon/win"));
+		});
+
+		connect(game, &MineSweeper::change,
+				this, [this, bomb_screen]()
+		{
+			if (game->getBombs() != static_cast<int>(bomb_screen->value()))
+				bomb_screen->display(game->getBombs());
 		});
 
 		paintGrid();

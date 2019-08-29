@@ -36,17 +36,31 @@ public:
 		unsigned int surrounding_bombs;
 	public:
 		Cell();
+		bool isClicked() const;
+		bool isFlagged() const;
+		bool isBomb() const;
+		unsigned int getSurroundingBombs() const;
 	};
+
 	class Index
 	{
 		friend class MineSweeper;
 	private:
+		std::vector<std::vector<Cell>> &grid;
 		unsigned int i, j;
-		Index(unsigned int row, unsigned int column);
+		Index(std::vector<std::vector<Cell>> &g,
+			  unsigned int row,
+			  unsigned int column);
+	public:
+		Cell &operator*() const;
+		Cell *operator->() const;
+		int row() const;
+		int column() const;
 	};
 
 	explicit MineSweeper(Difficulty d, QObject *parent = nullptr);
-	std::vector<std::vector<Index>> getGrid() const;
+	std::vector<std::vector<Index>> getGrid();
+	int getBombs() const;
 	Cell &getCell(const Index &i);
 
 signals:
@@ -57,7 +71,7 @@ signals:
 public slots:
 	void click(const Index &i);
 	void doubleClick(const Index &i);
-	void swtichFlag(const Index &i);
+	void switchFlag(const Index &i);
 };
 
 #endif // MINESWEEPER_H
