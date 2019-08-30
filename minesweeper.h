@@ -54,8 +54,8 @@ public:
 	public:
 		Cell &operator*() const;
 		Cell *operator->() const;
-		int row() const;
-		int column() const;
+		unsigned int row() const;
+		unsigned int column() const;
 	};
 
 	explicit MineSweeper(Difficulty d, QObject *parent = nullptr);

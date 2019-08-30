@@ -238,12 +238,12 @@ MineSweeper::Cell *MineSweeper::Index::operator->() const
 	return &grid[i][j];
 }
 
-int MineSweeper::Index::row() const
+unsigned int MineSweeper::Index::row() const
 {
 	return i;
 }
 
-int MineSweeper::Index::column() const
+unsigned int MineSweeper::Index::column() const
 {
 	return j;
 }

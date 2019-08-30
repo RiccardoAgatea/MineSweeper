@@ -3,7 +3,7 @@
 
 #include <QFrame>
 #include <QLabel>
-#include "MineSweeper.h"
+#include "minesweeper.h"
 
 class CellWidget: public QFrame
 {

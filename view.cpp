@@ -44,13 +44,20 @@ void View::paintGrid()
 			{
 				game->switchFlag(cell->getCell());
 			});
+
+			connect(cell, &CellWidget::doubleClicked,
+					game, [this, cell]()
+			{
+				game->doubleClick(cell->getCell());
+			});
 		}
 
 	connect(game, &MineSweeper::change,
 			this, [this](const MineSweeper::Index & i)
 	{
 		qobject_cast<CellWidget *>(grid_layout->
-								   itemAtPosition(i.row(), i.column())->
+								   itemAtPosition(static_cast<int>(i.row()),
+										   static_cast<int>(i.column()))->
 								   widget())->update();
 	});
 }

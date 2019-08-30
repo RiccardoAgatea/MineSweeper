@@ -5,5 +5,16 @@
         <file alias="lose">Icons/Lose.png</file>
         <file alias="win">Icons/Win.png</file>
         <file alias="flag">Icons/Flag.png</file>
+        <file alias="explod">Icons/Exploded Bomb.png</file>
+    </qresource>
+    <qresource prefix="/numbers">
+        <file alias="1">Icons/Number 1.png</file>
+        <file alias="2">Icons/Number 2.png</file>
+        <file alias="3">Icons/Number 3.png</file>
+        <file alias="4">Icons/Number 4.png</file>
+        <file alias="5">Icons/Number 5.png</file>
+        <file alias="6">Icons/Number 6.png</file>
+        <file alias="7">Icons/Number 7.png</file>
+        <file alias="8">Icons/Number 8.png</file>
     </qresource>
 </RCC>

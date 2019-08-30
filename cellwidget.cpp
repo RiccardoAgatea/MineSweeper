@@ -5,7 +5,9 @@
 
 void CellWidget::mousePressEvent(QMouseEvent *event)
 {
-	if (!cell->isClicked() && !cell->isFlagged())
+	if (!cell->isClicked() &&
+			!cell->isFlagged() &&
+			event->button() == Qt::LeftButton)
 		setFrameShadow(QFrame::Sunken);
 
 	QFrame::mousePressEvent(event);
@@ -71,6 +73,15 @@ void CellWidget::update()
 	}
 	else
 	{
+		setFrameStyle(QFrame::Panel | QFrame::Sunken);
 
+		if (cell->isBomb())
+			icon->setPixmap(QPixmap(":/icon/explod").scaled({15, 15}));
+		else if (cell->getSurroundingBombs() != 0)
+			icon->setPixmap(
+				QPixmap(":/numbers/" +
+						QString::number(cell->getSurroundingBombs()))
+				.scaled({15, 15}));
 	}
+
 }
