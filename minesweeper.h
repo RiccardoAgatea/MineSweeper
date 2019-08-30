@@ -27,6 +27,8 @@ private:
 	int bombs;
 
 	static GameSize getGameSize(Difficulty d);
+
+	bool hasWon() const;
 public:
 	class Cell
 	{

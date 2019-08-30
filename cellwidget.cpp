@@ -15,18 +15,25 @@ void CellWidget::mousePressEvent(QMouseEvent *event)
 
 void CellWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-	if (event->type() == QEvent::MouseButtonRelease)
+	if (!cell->isClicked() &&
+			event->type() == QEvent::MouseButtonRelease)
 	{
 		if (event->button() == Qt::LeftButton)
 			emit clicked();
 		else if (event->button() == Qt::RightButton)
 			emit rightClicked();
 	}
-	else if (event->type() == QEvent::MouseButtonDblClick &&
-			 event->button() == Qt::LeftButton)
-		emit doubleClicked();
 
 	QFrame::mouseReleaseEvent(event);
+}
+
+void CellWidget::mouseDoubleClickEvent(QMouseEvent *event)
+{
+	if (cell->isClicked() &&
+			event->button() == Qt::LeftButton)
+		emit doubleClicked();
+
+	QFrame::mouseDoubleClickEvent(event);
 }
 
 CellWidget::CellWidget(const MineSweeper::Index &c, QWidget *parent):
@@ -84,4 +91,15 @@ void CellWidget::update()
 				.scaled({15, 15}));
 	}
 
+}
+
+void CellWidget::showContent()
+{
+	if (!cell->isClicked())
+	{
+		if (cell->isBomb() && !cell->isFlagged())
+			icon->setPixmap(QPixmap(":/icon/bomb").scaled({15, 15}));
+		else if (!cell->isBomb() && cell->isFlagged())
+			icon->setPixmap(QPixmap(":/icon/wflag").scaled({15, 15}));
+	}
 }

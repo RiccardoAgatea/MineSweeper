@@ -15,6 +15,7 @@ private:
 protected:
 	virtual void mousePressEvent(QMouseEvent *event) override;
 	virtual void mouseReleaseEvent(QMouseEvent *event) override;
+	virtual void mouseDoubleClickEvent(QMouseEvent *event) override;
 
 public:
 	explicit CellWidget(const MineSweeper::Index &c,
@@ -29,6 +30,7 @@ signals:
 
 public slots:
 	void update();
+	void showContent();
 };
 
 #endif // CELLWIDGET_H

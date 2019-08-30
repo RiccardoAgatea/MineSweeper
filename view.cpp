@@ -50,6 +50,12 @@ void View::paintGrid()
 			{
 				game->doubleClick(cell->getCell());
 			});
+
+			connect(game, &MineSweeper::gameOver,
+					cell, &CellWidget::showContent);
+
+			connect(game, &MineSweeper::youWon,
+					cell, &CellWidget::showContent);
 		}
 
 	connect(game, &MineSweeper::change,

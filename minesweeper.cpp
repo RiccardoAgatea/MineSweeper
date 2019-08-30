@@ -1,5 +1,6 @@
 ﻿#include "minesweeper.h"
 #include <algorithm>
+#include <ctime>
 
 MineSweeper::GameSize MineSweeper::getGameSize(MineSweeper::Difficulty
         d)
@@ -15,6 +16,16 @@ MineSweeper::GameSize MineSweeper::getGameSize(MineSweeper::Difficulty
 	}
 
 	return {0, 0, 0};
+}
+
+bool MineSweeper::hasWon() const
+{
+	for (auto &row : grid)
+		for (auto &cell : row)
+			if (!cell.isClicked() && !cell.isBomb())
+				return false;
+
+	return true;
 }
 
 MineSweeper::MineSweeper(Difficulty d, QObject *parent):
@@ -34,6 +45,7 @@ MineSweeper::MineSweeper(Difficulty d, QObject *parent):
 	for (unsigned int i = 0; i < g.height * g.width; ++i)
 		numbers.push_back(static_cast<int>(i));
 
+	std::srand(static_cast<unsigned int>(time(nullptr)));
 	std::random_shuffle(numbers.begin(), numbers.end());
 
 	for (unsigned int i = 0; i < numbers.size(); ++i)
@@ -135,6 +147,9 @@ void MineSweeper::click(const MineSweeper::Index &i)
 					click({grid, i.i + 1, i.j + 1});
 			}
 		}
+
+		if (hasWon())
+			emit youWon();
 	}
 }
 
