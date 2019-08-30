@@ -1,6 +1,8 @@
-/build*
 /debug
 /release
+/mocfiles
+/objfiles
+/rccfiles
 .qmake*
 Makefile*
 *.pro.*
