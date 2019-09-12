@@ -50,7 +50,6 @@ CellWidget::CellWidget(const MineSweeper::Index &c, QWidget *parent):
 	QHBoxLayout *layout = new QHBoxLayout;
 	layout->addWidget(icon);
 	layout->setContentsMargins(0, 0, 0, 0);
-	//layout->setSizeConstraint(QLayout::SetFixedSize);
 	setLayout(layout);
 
 	icon->setMinimumSize({15, 15});
